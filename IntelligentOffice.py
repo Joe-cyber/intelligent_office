@@ -21,6 +21,9 @@ class IntelligentOffice:
     LUX_MIN = 500
     LUX_MAX = 550
 
+    PPM_MAX = 800
+    PPM_MIN = 500
+
     def __init__(self):
         """
         Constructor
@@ -56,7 +59,6 @@ class IntelligentOffice:
         else:
             raise IntelligentOfficeError
 
-
     def manage_blinds_based_on_time(self) -> None:
         """
         Uses the RTC and servo motor to open/close the blinds based on current time and day.
@@ -73,7 +75,6 @@ class IntelligentOffice:
                 self.change_servo_angle(0)
                 self.blinds_open = False
 
-
     def manage_light_level(self) -> None:
         """
         Tries to maintain the actual light level inside the office, measure by the photoresitor,
@@ -85,7 +86,8 @@ class IntelligentOffice:
         stops regulating the light level in the office and then turns off the smart light bulb. 
         When the first worker goes back into the office, the system resumes regulating the light level
         """
-        if [self.check_quadrant_occupancy(p) for p in [self.INFRARED_PIN_1, self.INFRARED_PIN_2, self.INFRARED_PIN_3, self.INFRARED_PIN_4]].count(True) > 0:
+        if [self.check_quadrant_occupancy(p) for p in
+            [self.INFRARED_PIN_1, self.INFRARED_PIN_2, self.INFRARED_PIN_3, self.INFRARED_PIN_4]].count(True) > 0:
             light_level = GPIO.input(self.PHOTO_PIN)
             if light_level < self.LUX_MAX:
                 GPIO.output(self.LED_PIN, GPIO.HIGH)
@@ -97,15 +99,19 @@ class IntelligentOffice:
             GPIO.output(self.LED_PIN, GPIO.LOW)
             self.light_on = False
 
-
-
     def monitor_air_quality(self) -> None:
         """
         Use the carbon dioxide sensor to monitor the level of CO2 in the office.
         If the amount of detected CO2 is greater than or equal to 800 PPM, the system turns on the
         switch of the exhaust fan until the amount of CO2 is lower than 500 PPM.
         """
-        pass
+        ppm = GPIO.input(self.CO2_PIN)
+        if ppm >= self.PPM_MAX:
+            GPIO.output(self.FAN_PIN, GPIO.HIGH)
+            self.fan_switch_on = True
+        elif ppm < self.PPM_MIN:
+            GPIO.output(self.FAN_PIN, GPIO.LOW)
+            self.fan_switch_on = False
 
     def change_servo_angle(self, duty_cycle: float) -> None:
         """
@@ -117,6 +123,3 @@ class IntelligentOffice:
         time.sleep(1)
         GPIO.output(self.SERVO_PIN, GPIO.LOW)
         self.pwm.ChangeDutyCycle(0)
-
-
-
