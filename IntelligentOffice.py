@@ -63,7 +63,14 @@ class IntelligentOffice:
         The system fully opens the blinds at 8:00 and fully closes them at 20:00
         each day except for Saturday and Sunday.
         """
-        pass
+        day = self.rtc.get_current_day()
+        actual_time = self.rtc.get_current_time_string()
+        if day != "SATURDAY" and day != "SUNDAY":
+            if actual_time[:5] == "08:00":
+                self.change_servo_angle(180)
+            elif actual_time[:5] == "20:00":
+                self.change_servo_angle(0)
+
 
     def manage_light_level(self) -> None:
         """
@@ -96,3 +103,6 @@ class IntelligentOffice:
         time.sleep(1)
         GPIO.output(self.SERVO_PIN, GPIO.LOW)
         self.pwm.ChangeDutyCycle(0)
+
+
+
