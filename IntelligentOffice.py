@@ -89,7 +89,7 @@ class IntelligentOffice:
         if [self.check_quadrant_occupancy(p) for p in
             [self.INFRARED_PIN_1, self.INFRARED_PIN_2, self.INFRARED_PIN_3, self.INFRARED_PIN_4]].count(True) > 0:
             light_level = GPIO.input(self.PHOTO_PIN)
-            if light_level < self.LUX_MAX:
+            if light_level < self.LUX_MIN:
                 GPIO.output(self.LED_PIN, GPIO.HIGH)
                 self.light_on = True
             elif light_level > self.LUX_MAX:
@@ -132,4 +132,3 @@ class IntelligentOffice:
 
     def is_fan_switch_on(self) -> bool:
         return self.fan_switch_on
-

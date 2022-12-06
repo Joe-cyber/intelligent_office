@@ -52,3 +52,18 @@ class IntelligentOfficeTest(unittest.TestCase):
         mock_rtc2.return_value = "20:00:59"
         self.io.manage_blinds_based_on_time()
         self.assertFalse(self.io.is_blinds_open())
+
+    @patch.object(GPIO, 'input')
+    def test_manage_light_level_on_true(self, mock_input):
+        mock_input.side_effect = [10, 0, 0, 0, 490]
+        self.io.manage_light_level()
+        self.assertTrue(self.io.is_light_on())
+
+    @patch.object(GPIO, 'input')
+    def test_manage_light_level_on_false(self, mock_input):
+        mock_input.side_effect = [10, 0, 0, 0, 510]
+        self.io.manage_light_level()
+        self.assertFalse(self.io.is_light_on())
+
+
+
