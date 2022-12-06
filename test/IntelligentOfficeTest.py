@@ -77,5 +77,17 @@ class IntelligentOfficeTest(unittest.TestCase):
         self.io.manage_light_level()
         self.assertFalse(self.io.is_light_on())
 
+    @patch.object(GPIO, 'input')
+    def test_monitor_air_quality_fan_on(self, mock_input):
+        mock_input.return_value = 800
+        self.io.monitor_air_quality()
+        self.assertTrue(self.io.fan_switch_on)
+
+    @patch.object(GPIO, 'input')
+    def test_monitor_air_quality_fan_off(self, mock_input):
+        mock_input.return_value = 490
+        self.io.monitor_air_quality()
+        self.assertFalse(self.io.fan_switch_on)
+
 
 
