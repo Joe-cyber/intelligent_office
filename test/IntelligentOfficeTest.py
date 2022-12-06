@@ -65,5 +65,17 @@ class IntelligentOfficeTest(unittest.TestCase):
         self.io.manage_light_level()
         self.assertFalse(self.io.is_light_on())
 
+    @patch.object(GPIO, 'input')
+    def test_manage_light_level_on_true_with_person(self, mock_input):
+        mock_input.side_effect = [10, 10, 10, 0, 490]
+        self.io.manage_light_level()
+        self.assertTrue(self.io.is_light_on())
+
+    @patch.object(GPIO, 'input')
+    def test_manage_light_level_on_false_with_no_person(self, mock_input):
+        mock_input.side_effect = [0, 0, 0, 0, 0]
+        self.io.manage_light_level()
+        self.assertFalse(self.io.is_light_on())
+
 
 
