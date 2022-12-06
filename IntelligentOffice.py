@@ -85,11 +85,18 @@ class IntelligentOffice:
         stops regulating the light level in the office and then turns off the smart light bulb. 
         When the first worker goes back into the office, the system resumes regulating the light level
         """
-        light_level = GPIO.input(self.PHOTO_PIN)
-        if light_level < self.LUX_MAX:
-            GPIO.output(self.LED_PIN, GPIO.HIGH)
-        elif light_level > self.LUX_MAX:
-            GPIO.output(self.LED_PIN, GPIO.HIGH)
+        if [self.check_quadrant_occupancy(p) for p in [self.INFRARED_PIN_1, self.INFRARED_PIN_2, self.INFRARED_PIN_3, self.INFRARED_PIN_4]].count(True) > 0:
+            light_level = GPIO.input(self.PHOTO_PIN)
+            if light_level < self.LUX_MAX:
+                GPIO.output(self.LED_PIN, GPIO.HIGH)
+                self.light_on = True
+            elif light_level > self.LUX_MAX:
+                GPIO.output(self.LED_PIN, GPIO.LOW)
+                self.light_on = False
+        else:
+            GPIO.output(self.LED_PIN, GPIO.LOW)
+            self.light_on = False
+
 
 
     def monitor_air_quality(self) -> None:
