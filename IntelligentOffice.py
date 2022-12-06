@@ -68,8 +68,10 @@ class IntelligentOffice:
         if day != "SATURDAY" and day != "SUNDAY":
             if actual_time[:5] == "08:00":
                 self.change_servo_angle(180)
+                self.blinds_open = True
             elif actual_time[:5] == "20:00":
                 self.change_servo_angle(0)
+                self.blinds_open = False
 
 
     def manage_light_level(self) -> None:
