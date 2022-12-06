@@ -123,3 +123,13 @@ class IntelligentOffice:
         time.sleep(1)
         GPIO.output(self.SERVO_PIN, GPIO.LOW)
         self.pwm.ChangeDutyCycle(0)
+
+    def is_blinds_open(self) -> bool:
+        return self.blinds_open
+
+    def is_light_on(self) -> bool:
+        return self.light_on
+
+    def is_fan_switch_on(self) -> bool:
+        return self.fan_switch_on
+
